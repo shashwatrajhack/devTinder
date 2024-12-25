@@ -5,8 +5,14 @@ const app = express();
 //     res.send("helooo from dashboard")
 // });
 
-app.use("/test",(req,res)=>{
-    res.send("helooooo from test route")
+app.use("/admin/getAllData",
+    (req,res)=>{
+        //route handler
+        
+
+    res.send("all data sent")
 });
 
-app.listen(7777);
+app.listen(7777,()=>{
+    console.log("server is successfully running on port 7777")
+});
