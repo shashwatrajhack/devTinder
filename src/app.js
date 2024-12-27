@@ -4,19 +4,16 @@ const connectDb = require("./config/database");
 const app = express();
 const User = require("./models/user");
 
+app.use(express.json());
+
 // app.use("/",(req,res)=>{
 //     res.send("helooo from dashboard")
 // });
 
 app.post("/signup",async (req,res)=>{
-//creating an instance of user
+//creating an instance of user model
 
-const user = new User({
-    firstName:"krishna",
-    lastName:"raj",
-    emailId:"krishna@gmail.com",
-    password:"krishna@1234"
-});
+const user = new User(req.body);
 
 try{
     await user.save();
@@ -24,6 +21,34 @@ res.send("user added successfully")
 }catch(err){
     res.status(400).send("error saving the user:" + err.message)
 }
+})
+
+//get user by email
+app.get("/user",async (req,res) => {
+    const userEmail = req.body.emailId;
+
+    try{
+        console.log(userEmail);
+        const user = await User.findOne({emailId:userEmail});
+        if(!user){
+            res.status(400).send("user not found")
+        }else{
+            res.send(user);
+        }
+
+    }catch(err){
+        res.status(400).send("something went wrong");
+    }
+})
+//feed api 
+app.get("/feed",async (req,res)=>{
+    try{
+        const users = await User.find({});
+        res.send(users);
+
+    }catch(err){
+        res.status(400).send("something went wrong");
+    }
 })
 
 connectDb().then(() => {
