@@ -32,7 +32,13 @@ const userSchema = new mongoose.Schema({
                 throw new Error("gender data not valid")
             }
         }
+    },
+    {
+        timestamps:true
     }
+    
 }) ;
 
 module.exports = mongoose.model("user",userSchema);
+
+

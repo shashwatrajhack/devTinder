@@ -51,6 +51,20 @@ app.get("/feed",async (req,res)=>{
     }
 })
 
+app.patch("/update",async(req,res)=>{
+    const userId = req.body.userId;
+    const data = req.body;
+
+    try{
+        const user = await User.findByIdAndUpdate(userId);
+        res.send("user Updated successfully");
+
+    }catch(err){
+        res.status(400).send("something went wrong");
+    }
+
+})
+
 connectDb().then(() => {
     console.log("Connection established successfully");
     app.listen(7777,()=>{
