@@ -66,6 +66,19 @@ app.get("/feed",async (req,res)=>{
     }
 })
 
+app.delete("/user",async (req,res)=>{
+    const userId = req.body.userId;
+    try{
+        const user = await User.findByIdAndDelete(userId);
+        res.send("User Id deleted");
+
+
+    }catch(err){
+        res.status(400).send("something went wrong");
+    }
+
+})
+
 app.patch("/update",async(req,res)=>{
     const userId = req.body.userId;
     const data = req.body;
