@@ -1,142 +1,34 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const connectDb = require("./config/database");
 const app = express();
+const connectDb = require("./config/database");
 const User = require("./models/user");
-const {validateSignUpData} = require("./utils/validation");
 
 app.use(express.json());
 
-// app.use("/",(req,res)=>{
-//     res.send("helooo from dashboard")
-// });
+app.post("/signup", async (req, res) => {
+  const user = new User({
+    firstName: "Shashwat",
+    lastName: "raj",
+    emailId: "shashwagt@gmail.com",
+    password: "12345",
+  });
 
-app.post("/signup",async (req,res)=>{
-
-
-    try{
- //validation of signUp data
-    //validateSignUpData(req);
-//creating an instance of user model
-
-const {firstName,lastName,emailId,password} = new User(req.body);
-
-const paswordHash = await bcrypt.hash(password,10);
-
-//creating a new instance of the model
-
-const user = new User({
-    firstName,
-    lastName,
-    emailId,
-    password:paswordHash,
-})
+  try {
     await user.save();
-res.send("user added successfully")
-}catch(err){
-    res.status(400).send("error saving the user:" + err.message)
-}
-})
 
-app.post("/login",async (req,res)=>{
-    try{
-        const {emailId,password} = req.body;
-        const user = await User.findOne({emailId:emailId});
-        if(!user){
-            throw new error("invalid credentials");
+    res.send("User created successfully");
+  } catch (e) {
+    res.status(400).send("error saving the user" + e);
+  }
+});
 
-        }
-        const isPasswordValid = await bcrypt.compare(password,user.password);
-        if(isPasswordValid){
-            res.send("user login successful");
-        }else{
-            throw new error("invalid credentials");
-        }
-    }catch(err){
-        res.status(400).send("ERROR :" + err.message);
-    }
-
-})
-
-//get user by email
-app.get("/user",async (req,res) => {
-    const userEmail = req.body.emailId;
-
-    try{
-        console.log(userEmail);
-        const user = await User.findOne({emailId:userEmail});
-        if(!user){
-            res.status(400).send("user not found")
-        }else{
-            res.send(user);
-        }
-
-    }catch(err){
-        res.status(400).send("something went wrong");
-    }
-})
-//feed api 
-app.get("/feed",async (req,res)=>{
-    try{
-        const users = await User.find({});
-        res.send(users);
-
-    }catch(err){
-        res.status(400).send("something went wrong");
-    }
-})
-
-app.delete("/user",async (req,res)=>{
-    const userId = req.body.userId;
-    try{
-        const user = await User.findByIdAndDelete(userId);
-        res.send("User Id deleted");
-
-
-    }catch(err){
-        res.status(400).send("something went wrong");
-    }
-
-})
-
-app.patch("/update",async(req,res)=>{
-    const userId = req.body.userId;
-    const data = req.body;
-
-    try{
-
-        const ALLOWED_UPDATES = [
-            "about",
-            "gender",
-            "age",
-            "skills"
-        ];
-        const isUpdateAllowed = Object.keys(data).every((k) =>{
-            ALLOWED_UPDATES.includes(k)
-        });
-        if(!isUpdateAllowed){
-            throw new error("update not allowed");
-        }
-        if(data?.skills.length>10){
-            throw new error("skills more than 10 not allowed")
-        }
-        const user = await User.findByIdAndUpdate(userId);
-        res.send("user Updated successfully");
-
-    }catch(err){
-        res.status(400).send("something went wrong");
-    }
-
-})
-
-connectDb().then(() => {
+connectDb()
+  .then(() => {
     console.log("Connection established successfully");
-    app.listen(7777,()=>{
-        console.log("server is successfully running on port 7777")
+    app.listen(7777, () => {
+      console.log("server is successfully running on port 7777");
     });
-})
-.catch((err) =>{
-     console.error("Connection not established successfully");
-
-})
-
+  })
+  .catch((err) => {
+    console.error("Connection not established successfully");
+  });
