@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
     },
     gender:{
         type:String,
+        //adds a validator function for this property.
         validate(value){
             if(!["male","female","others"].includes(value)){
                 throw new Error("gender data not valid")
@@ -48,10 +49,10 @@ const userSchema = new mongoose.Schema({
         type:String,
        
     }
-    // {
-    //     timestamps:true
-    // }
     
+    
+},{
+    timestamps:true
 }) ;
 
 module.exports = mongoose.model("user",userSchema);
