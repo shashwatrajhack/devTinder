@@ -41,10 +41,12 @@ const userSchema = new mongoose.Schema({
     },
     about:{
         type:String,
+        default:"this is default about the user!"
 
     },
     skills:{
         type:String,
+       
     }
     // {
     //     timestamps:true
