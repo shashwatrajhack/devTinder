@@ -2,17 +2,21 @@ const express = require('express');
 
 const app = express();
 
-app.use("/",(req,res) =>{
-  res.send("hhhhhhhhhhhhhhellllo")
-});
 
-app.use("/test",(req,res) =>{
-  res.send("hhhhhhhhhhhhhhellllo from test")
-});
+//works for  /ac , /abc also
+app.get("/ab?c",(req,res) => {
+  res.send("Getting all the data from DB");
+})
 
-app.use("/happy",(req,res) =>{
-  res.send("hi from happy")
-});
+app.get("/user",(req,res) => {
+  res.send("Getting all the data from DB");
+})
+
+app.post("/user",(req,res) => {
+  console.log("adding data to db");
+  res.send("Data added successfully to DB");
+})
+
 
 
 app.listen(3000, () => {
