@@ -7,9 +7,7 @@ const userSchema = mongoose.Schema({
   lastName: {
     type: String,
   },
-  email: {
-    type: String,
-  },
+   emailId: { type: String, unique: true }, // <-- unique index here
   password: {
     type: String,
   },
