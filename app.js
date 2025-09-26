@@ -6,7 +6,7 @@ app.use(express.json());
 
 const connectDB = require("./src/config/database");
 const User = require("./src/models/user");
-const { validateSignupData } = require("./src/utils/validation");
+const { validateSignupData, validateLoginData } = require("./src/utils/validation");
 const bcrypt = require("bcrypt");
 
 app.post("/signup", async (req, res) => {
@@ -29,6 +29,28 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.post("/login",async (req,res) =>{
+  try{
+    validateLoginData(req);
+    const {emailId,password} = req.body;
+    const user = await User.findOne({emailId:emailId});
+    if(!user){
+      throw new Error("Invalid Credentials");
+    }
+    const isPasswordValid = await bcrypt.compare(password,user.password);
+
+    if(isPasswordValid){
+      res.send("Login Successfull!!!")
+    }else{
+      throw new Error("Invalid credentials");
+    }
+  }catch(err){
+  
+    res.status(400).send("error loging the user : " + err.message);
+
+  }
+})
+
 app.get("/user", async (req, res) => {
   const userEmail = req.body.emailId;
 
@@ -40,6 +62,18 @@ app.get("/user", async (req, res) => {
     res.status(400).send("user not found");
   }
 });
+
+app.get("/feed",async(req,res) => {
+  try {
+    const user = await User.find();
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send("users not found : "+err);
+  }
+
+
+})
 
 app.delete("/user", async (req, res) => {
   let userId = req.body.userId;
