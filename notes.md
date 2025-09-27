@@ -24,3 +24,7 @@ Built-in: e.g. express.json(), express.static()
 Error-handling: special signature (err, req, res, next)
 
 
+it is helpfull in login credentials
+cookies = cookie is like a temporary password which will come in all the request to the server.
+
+
