@@ -14,11 +14,14 @@ const bcrypt = require("bcrypt");
 
 const cookieParser = require("cookie-parser");
 
-app.use(cookieParser);
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
+      console.log('******************');
+
   try {
     validateSignupData(req);
+    console.log(validateSignupData(req));
 
     //password encryption
 
@@ -57,8 +60,7 @@ app.post("/login", async (req, res) => {
       //Add the token to cookie and send the response back to user
 
       //cookie is like a temporary password which will come in all the request to the server
-
-      const cookies = "hgfvbchdbdhjbjhqbhjbdeffhehhuihql";
+      res.cookie("token","hgfvbchdbdhjbjhqbhjbdeffhehhuihql");
 
       res.send("Login Successfull!!!");
     } else {
