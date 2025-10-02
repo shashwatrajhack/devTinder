@@ -73,6 +73,15 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", async (req, res) => {
   const cookies = req.cookies;
+
+  const {token} = cookies;
+
+  //validate the token or token logic
+
+  //use jwt
+  //in token there is three thing -- header, payload, signature
+
+  
   console.log(cookies);
 
   res.send("reading cookies");
