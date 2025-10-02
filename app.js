@@ -1,9 +1,6 @@
 const express = require("express");
-
 const app = express();
-
 app.use(express.json());
-
 const connectDB = require("./src/config/database");
 const User = require("./src/models/user");
 const {
@@ -14,10 +11,12 @@ const bcrypt = require("bcrypt");
 
 const cookieParser = require("cookie-parser");
 
+const jwt = require("jsonwebtoken");
+
 app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
-      console.log('******************');
+  console.log("******************");
 
   try {
     validateSignupData(req);
@@ -56,11 +55,14 @@ app.post("/login", async (req, res) => {
 
     if (isPasswordValid) {
       // create a jwt token
+      const token = await jwt.sign({_id:user._id},"devTinder789")
 
       //Add the token to cookie and send the response back to user
 
       //cookie is like a temporary password which will come in all the request to the server
-      res.cookie("token","hgfvbchdbdhjbjhqbhjbdeffhehhuihql");
+
+
+      res.cookie("token", token);
 
       res.send("Login Successfull!!!");
     } else {
@@ -74,14 +76,13 @@ app.post("/login", async (req, res) => {
 app.get("/profile", async (req, res) => {
   const cookies = req.cookies;
 
-  const {token} = cookies;
+  const { token } = cookies;
 
   //validate the token or token logic
 
   //use jwt
   //in token there is three thing -- header, payload, signature
 
-  
   console.log(cookies);
 
   res.send("reading cookies");
