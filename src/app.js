@@ -1,12 +1,9 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
-const connectDB = require("./src/config/database");
-const User = require("./src/models/user");
-const {
-  validateSignupData,
-  validateLoginData,
-} = require("./src/utils/validation");
+const connectDB = require("./config/database");
+const User = require("./models/user");
+const { validateSignupData, validateLoginData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 
 const cookieParser = require("cookie-parser");
@@ -55,12 +52,11 @@ app.post("/login", async (req, res) => {
 
     if (isPasswordValid) {
       // create a jwt token
-      const token = await jwt.sign({_id:user._id},"devTinder789")
+      const token = await jwt.sign({ _id: user._id }, "devTinder789");
 
       //Add the token to cookie and send the response back to user
 
       //cookie is like a temporary password which will come in all the request to the server
-
 
       res.cookie("token", token);
 
@@ -74,18 +70,22 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/profile", async (req, res) => {
-  const cookies = req.cookies;
-
-  const { token } = cookies;
-
-  //validate the token or token logic
-
-  //use jwt
-  //in token there is three thing -- header, payload, signature
-
-  console.log(cookies);
-
-  res.send("reading cookies");
+  try {
+    const cookies = req.cookies;
+    const { token } = cookies;
+    //validate the token or token logic
+    if (!token) {
+      throw new Error("Invalid token");
+    }
+    const decodedMessage = jwt.verify(token, "devTinder789");
+    const { _id } = decodedMessage;
+    const user = await User.findById(_id);
+    //use jwt
+    //in token there is three thing -- header, payload, signature
+    res.send("reading cookies" + user);
+  } catch (err) {
+    res.status(400).send("Error" + err.message);
+  }
 });
 
 app.get("/user", async (req, res) => {
