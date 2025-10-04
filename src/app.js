@@ -9,22 +9,18 @@ const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
 
 app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
-  console.log("******************");
 
   try {
     validateSignupData(req);
-    console.log(validateSignupData(req));
-
     //password encryption
-
     const { firstName, lastName, emailId, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword);
     //creating the instance of the user model
     const user = new User({
       firstName,
@@ -69,17 +65,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile",userAuth, async (req, res) => {
   try {
-    const cookies = req.cookies;
-    const { token } = cookies;
-    //validate the token or token logic
-    if (!token) {
-      throw new Error("Invalid token");
-    }
-    const decodedMessage = jwt.verify(token, "devTinder789");
-    const { _id } = decodedMessage;
-    const user = await User.findById(_id);
+    const user = req.user;
     //use jwt
     //in token there is three thing -- header, payload, signature
     res.send("reading cookies" + user);
